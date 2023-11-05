@@ -8,7 +8,7 @@ namespace KiiSecWebMVC.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger; // OrganizationController??
+        private readonly ILogger<HomeController> _logger; 
         private readonly IEmailSender _emailSender;
 
         public HomeController(ILogger<HomeController> logger, IEmailSender emailSender)

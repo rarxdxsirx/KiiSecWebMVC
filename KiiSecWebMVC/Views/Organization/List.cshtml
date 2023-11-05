@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<KiiSec.Models.Organization>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Список организаций";
 }
 
-<h1>Index</h1>
+<h1>Список организаций</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Register">Создать новую</a>
 </p>
 <table class="table">
     <thead>
@@ -20,9 +20,6 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Login)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Password)
             </th>
             <th></th>
         </tr>
@@ -40,12 +37,9 @@
                 @Html.DisplayFor(modelItem => item.Login)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    @Html.ActionLink("Изменить", "Edit", new { organizationId = item.ID }) |
+                    @Html.ActionLink("Детали", "Details", new { organizationId = item.ID }) |
+                    @Html.ActionLink("Удалить", "Delete", new { organizationId = item.ID })
             </td>
         </tr>
 }

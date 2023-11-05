@@ -28,8 +28,9 @@ namespace KiiSecWebMVC.Controllers
         {
             IdentityUser user = await _userManager.FindByIdAsync(userID);
             if (user == null) { return NotFound(); }
-            var userRoles = await _userManager.GetRolesAsync(user);
+            var userRoles = await _userManager.GetRolesAsync(user);         
             var allRoles = _roleManager.Roles.ToList();
+
             ChangeRole changeRole = new ChangeRole()
             {
                 UserId = userID,

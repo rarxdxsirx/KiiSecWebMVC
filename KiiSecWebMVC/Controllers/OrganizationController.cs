@@ -10,6 +10,7 @@ using Microsoft.Build.Evaluation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using System.Net;
+using Humanizer.Localisation.TimeToClockNotation;
 
 namespace KiiSecWebMVC.Controllers
 {
@@ -59,7 +60,7 @@ namespace KiiSecWebMVC.Controllers
                     return Redirect("/Success");
                 }
                 return Redirect("/Fail");
-                //TODO MB LATER.......
+                //TODO MB LATER....... NEDEED???
                 //var result = "Произошла неизвестная ошибка!";
                 //if (response.StatusCode == HttpStatusCode.UnprocessableEntity)
                 //{
@@ -69,5 +70,50 @@ namespace KiiSecWebMVC.Controllers
             }
             return View();
         }
+
+        [Authorize(Roles = "Admin, Organization")]
+        public async Task<IActionResult> Details(int organizationId)
+        {
+            //TODO Check for valid organization
+
+            Organization organization = new Organization();
+            HttpClient client = _api.Initial();
+            HttpResponseMessage response = await client.GetAsync($"/api/Organization/{organizationId}");
+            if (response.IsSuccessStatusCode)
+            {
+                var result = response.Content.ReadAsStringAsync().Result;
+                organization = JsonConvert.DeserializeObject<Organization>(result);
+            }
+            return View(organization);
+        }
+
+        [Authorize(Roles = "Admin, Organization")]
+        public async Task<IActionResult> Edit(Organization organization)
+        {
+            //TODO Check for valid organization
+
+            if (ModelState.IsValid)
+            {
+                HttpClient client = _api.Initial();
+                string json = JsonConvert.SerializeObject(organization);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                //TODO Create Organization PUT API methid
+                var response = client.PutAsync("api/Organization", content).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    return Redirect("/Success");
+                }
+                return Redirect("/Fail");
+            }
+            return View(organization);
+        }
+
+
+        //TODO Organization delete method
+        //[Authorize(Roles = "Admin, Organization")]
+        //public async Task<IActionResult> Delete(int organizationId)
+        //{
+            //TODO Check for valid organization
+        //}
     }
 }
