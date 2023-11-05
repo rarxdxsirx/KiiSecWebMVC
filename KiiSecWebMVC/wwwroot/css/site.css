@@ -16,3 +16,28 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.col-md-4 {
+    margin:auto;
+}
+
+.under-login-variations {
+    margin-top: 10px;
+}
+
+.form-floating {
+    margin-top: 10px;
+}
+
+.checkbox {
+    margin-top: 10px;
+}
+
+.btn-primary {
+    margin-top: 10px;
+}
+
+.radio-roles {
+    display: flex;
+    justify-content: space-around;
+}

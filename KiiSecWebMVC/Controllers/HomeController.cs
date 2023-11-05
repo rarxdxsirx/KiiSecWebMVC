@@ -1,4 +1,6 @@
 ﻿using KiiSecWebMVC.Models;
+using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -6,11 +8,13 @@ namespace KiiSecWebMVC.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<OrganizationController> _logger;
+        private readonly ILogger<HomeController> _logger; // OrganizationController??
+        private readonly IEmailSender _emailSender;
 
-        public HomeController(ILogger<OrganizationController> logger)
+        public HomeController(ILogger<HomeController> logger, IEmailSender emailSender)
         {
             _logger = logger;
+            _emailSender = emailSender;
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -18,7 +22,7 @@ namespace KiiSecWebMVC.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }

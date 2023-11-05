@@ -7,6 +7,9 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using System.Text;
 using Microsoft.Build.Evaluation;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
+using System.Net;
 
 namespace KiiSecWebMVC.Controllers
 {
@@ -19,8 +22,17 @@ namespace KiiSecWebMVC.Controllers
         {
             return View();
         }
+        public IActionResult Success()
+        {
+            return View();
+        }
+        public IActionResult Fail()
+        {
+            return View();
+        }
 
-        public async Task<IActionResult> OrganizationsList()
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> List()
         {
             List<Organization> organizations= new List<Organization>();
             HttpClient client = _api.Initial();
@@ -33,8 +45,8 @@ namespace KiiSecWebMVC.Controllers
             return View(organizations);
         }
 
-        
-        public async Task<IActionResult> OrganizationRegister(Organization organization) 
+        [Authorize(Roles = "Admin, Organization")]
+        public async Task<IActionResult> Register(Organization organization) 
         {
             if (ModelState.IsValid)
             {
@@ -42,15 +54,18 @@ namespace KiiSecWebMVC.Controllers
                 string json = JsonConvert.SerializeObject(organization);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 var response = client.PostAsync("api/Organization", content).Result;
-                return Redirect("/");
                 if (response.IsSuccessStatusCode)
                 {
-
+                    return Redirect("/Success");
                 }
-                else 
-                { 
-
-                }
+                return Redirect("/Fail");
+                //TODO MB LATER.......
+                //var result = "Произошла неизвестная ошибка!";
+                //if (response.StatusCode == HttpStatusCode.UnprocessableEntity)
+                //{
+                //    result = "Такая организация уже существует!";
+                //}
+                //return RedirectToAction("Fail", "Organization", result);
             }
             return View();
         }
