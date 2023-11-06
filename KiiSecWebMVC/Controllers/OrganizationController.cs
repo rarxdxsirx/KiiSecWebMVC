@@ -11,6 +11,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using System.Net;
 using Humanizer.Localisation.TimeToClockNotation;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace KiiSecWebMVC.Controllers
 {
@@ -18,6 +22,12 @@ namespace KiiSecWebMVC.Controllers
     {
 
         KiiSecAPI _api = new KiiSecAPI();
+        private readonly UserManager<IdentityUser> _userManager;
+
+        public OrganizationController(UserManager<IdentityUser> userManager)
+        {
+            _userManager = userManager;
+        }
 
         public IActionResult Index()
         {
@@ -35,20 +45,20 @@ namespace KiiSecWebMVC.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> List()
         {
-            List<Organization> organizations= new List<Organization>();
-            HttpClient client = _api.Initial();
-            HttpResponseMessage response = await client.GetAsync("api/Organization");
-            if (response.IsSuccessStatusCode) 
-            { 
-                var result = response.Content.ReadAsStringAsync().Result;
-                organizations = JsonConvert.DeserializeObject<List<Organization>>(result);
-            }
-            return View(organizations);
+            return View(KiiSecAPI.GetOrganizations().Result);
         }
 
         [Authorize(Roles = "Admin, Organization")]
         public async Task<IActionResult> Register(Organization organization) 
         {
+            IdentityUser user = await _userManager.GetUserAsync(User);
+            // TODO Organization exists in API mb?
+            if (KiiSecAPI.GetOrganizations().Result.FirstOrDefault(o => o.Email == user.Email) != null)
+            {
+                return Redirect("/Fail/"); // same change
+            }
+            organization.Email = user.Email;
+            ModelState.Remove("Email");
             if (ModelState.IsValid)
             {
                 HttpClient client = _api.Initial();
@@ -57,25 +67,39 @@ namespace KiiSecWebMVC.Controllers
                 var response = client.PostAsync("api/Organization", content).Result;
                 if (response.IsSuccessStatusCode)
                 {
-                    return Redirect("/Success");
+
+                    return Redirect("/Success/"); // TODO Change to RedirectToACtion
                 }
-                return Redirect("/Fail");
-                //TODO MB LATER....... NEDEED???
-                //var result = "Произошла неизвестная ошибка!";
-                //if (response.StatusCode == HttpStatusCode.UnprocessableEntity)
-                //{
-                //    result = "Такая организация уже существует!";
-                //}
-                //return RedirectToAction("Fail", "Organization", result);
-            }
+                return Redirect("/Fail/");
+            }   
             return View();
+            // same change
+
         }
 
         [Authorize(Roles = "Admin, Organization")]
-        public async Task<IActionResult> Details(int organizationId)
+        public async Task<IActionResult> Details()
         {
-            //TODO Check for valid organization
+            IdentityUser user = await _userManager.GetUserAsync(User);
+            int organizationId = KiiSecAPI.GetOrganizations().Result.Where(o => o.Email == user.Email).FirstOrDefault().ID;
+            Organization organization = new Organization();
+            HttpClient client = _api.Initial();
+            HttpResponseMessage response = await client.GetAsync($"/api/Organization/{organizationId}");
+            if (response.IsSuccessStatusCode)
+            {              
+                var result = response.Content.ReadAsStringAsync().Result;
+                organization = JsonConvert.DeserializeObject<Organization>(result);
+            }
+            if (!(user.Email == organization.Email || _userManager.GetRolesAsync(user).Result.Contains("Admin")))
+            {
+                return BadRequest();
+            }
+            return View(organization);
+        }
 
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DetailsForAdmins(int organizationId)
+        {
             Organization organization = new Organization();
             HttpClient client = _api.Initial();
             HttpResponseMessage response = await client.GetAsync($"/api/Organization/{organizationId}");
@@ -101,9 +125,9 @@ namespace KiiSecWebMVC.Controllers
                 var response = client.PutAsync("api/Organization", content).Result;
                 if (response.IsSuccessStatusCode)
                 {
-                    return Redirect("/Success");
+                    return Redirect("~/Home/Success");
                 }
-                return Redirect("/Fail");
+                return Redirect("~/Home/Fail");
             }
             return View(organization);
         }

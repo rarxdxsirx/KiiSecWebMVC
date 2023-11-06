@@ -34,16 +34,16 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index">Роли</a>
                             </li>
                         }
-                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Organization")) // TODO Configurate nav-bar link's
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Organization")) 
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Organization" asp-action="List">Моя организация</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Organization" asp-action="Details">Организация</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index">Мои работники</a>
-                            </li>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Employees" asp-action="List">Работники</a>
+                            </li>                          
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index">Мои заявки</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index">Заявки</a>
                             </li>
                         }
                     </ul>

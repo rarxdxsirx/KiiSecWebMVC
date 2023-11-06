@@ -4,7 +4,7 @@
     {
         public int OrganizationId { get; set; }
         public string Department { get; set; }
-        public ICollection<EmployeePermissions> EmployeePermissions { get; set; }
+        public ICollection<EmployeePermissions>? EmployeePermissions { get; set; }
 
 
         // количество посещений в день/месяц/год с возможностью группировки по подразделениям - в форме таблицы и графика; 

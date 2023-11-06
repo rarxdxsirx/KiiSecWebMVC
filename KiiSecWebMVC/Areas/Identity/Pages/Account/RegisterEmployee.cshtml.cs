@@ -10,6 +10,8 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using KiiSec.Models;
+using KiiSecWeb.Helper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -21,7 +23,8 @@ using Microsoft.Extensions.Logging;
 
 namespace KiiSecWebMVC.Areas.Identity.Pages.Account
 {
-    public class RegisterModel : PageModel
+    [Authorize(Roles = "Admin,Organization")]
+    public class RegisterEmployeeModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
@@ -31,7 +34,7 @@ namespace KiiSecWebMVC.Areas.Identity.Pages.Account
         private readonly IEmailSender _emailSender;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public RegisterModel(
+        public RegisterEmployeeModel(
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
@@ -100,12 +103,7 @@ namespace KiiSecWebMVC.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "Пароли не совпадают.")]
             public string ConfirmPassword { get; set; }
-
-            [Required(ErrorMessage = "Укажите тип вашей учётной записи.")]
-            [Display(Name = "isOrganization")]
-            public string Role { get; set; }
         }
-
 
         public async Task OnGetAsync(string returnUrl = null)
         {
@@ -115,6 +113,8 @@ namespace KiiSecWebMVC.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+            IdentityUser orgUser =  await _userManager.GetUserAsync(User);
+            int organizationId = KiiSecAPI.GetOrganizations().Result.Where(o => o.Email == orgUser.Email).FirstOrDefault().ID;
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
@@ -129,7 +129,7 @@ namespace KiiSecWebMVC.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    await _userManager.AddToRoleAsync(user, Input.Role);
+                    await _userManager.AddToRoleAsync(user, "Employee");
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -141,11 +141,13 @@ namespace KiiSecWebMVC.Areas.Identity.Pages.Account
                         protocol: Request.Scheme);
 
                     await _emailSender.SendEmailAsync(Input.Email, "KiiSec", 
-                       $"Подтвердите свой аккаунт, перейдя по ссылке: '{callbackUrl}'"); 
+                       $"Подтвердите свой аккаунт работника, перейдя по ссылке: '{callbackUrl}' {Environment.NewLine} " +
+                       $"Для входа используйте свою почту и следующий пароль: {Input.Password}"); 
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl });
+                        return RedirectToAction("Create","Employees", new { email = Input.Email, organizationId });
+                        // return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl, organizationId });
                     }
                     else
                     {

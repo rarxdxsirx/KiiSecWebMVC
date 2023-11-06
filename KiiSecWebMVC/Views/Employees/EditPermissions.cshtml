@@ -1,0 +1,60 @@
+﻿@using static KiiSecWebMVC.Controllers.EmployeesController;
+@model EmployeePermissionModel
+
+@{
+    ViewData["Title"] = "Изменить";
+}
+
+<h4>Редактирование возможностей работника</h4>
+<hr />
+<div class="row">
+
+    <div class="col-md-4">
+        <form asp-action="EditPermissions">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ID" class="control-label">ID</label>
+                <input asp-for="ID" class="form-control" readonly="readonly" />
+            </div>
+            <div class="form-group">
+                <label asp-for="OrganizationId" class="control-label">ID Организации</label>
+                <input asp-for="OrganizationId" class="form-control" readonly="readonly" />
+            </div>
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label">Имя</label>
+                <input asp-for="FirstName" class="form-control" readonly="readonly" />
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label">Фамилия</label>
+                <input asp-for="LastName" class="form-control" readonly="readonly" />
+            </div>
+            <div class="form-group">
+                <label asp-for="MiddleName" class="control-label">Отчество</label>
+                <input asp-for="MiddleName" class="form-control" readonly="readonly" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label">Email</label>
+                <input asp-for="Email" class="form-control" readonly="readonly" />
+            </div>
+            <div class="form-group">
+                @Html.CheckBoxFor(m => m.ValidateRequestInfo) Валидация заявки
+            </div>
+            <div class="form-group">
+                @Html.CheckBoxFor(m => m.SetVisitDate) Назначить дату посещения
+            </div>
+            <div class="form-group">
+                @Html.CheckBoxFor(m => m.UpdateVisitStatus) Обновить статус заявки
+            </div>
+            <div class="form-group">
+                @Html.CheckBoxFor(m => m.MarkArrival) Отметить прибытие
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Сохранить" class="btn btn-primary" action="EditPermissions"/>
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    @Html.ActionLink("Вернуться к списку", "List", new {organizationId = Model.OrganizationId})
+</div>
+
