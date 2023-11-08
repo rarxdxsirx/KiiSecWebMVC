@@ -1,0 +1,92 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using static KiiSecWebMVC.Controllers.VisitController;
+@model IEnumerable<VisitModel>
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@{
+    ViewData["Title"] = "List";
+}
+
+<h1>Заявки</h1>
+
+@if (SignInManager.IsSignedIn(User) && User.IsInRole("Visitor"))
+                        {
+    <p>
+        <a asp-action="Create">Подать новую</a>
+    </p>
+                        }
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Организация
+            </th>
+            <th>
+                Работник
+            </th>
+            <th>
+                Назначенная дата
+            </th>
+            <th>
+                Цель визита
+            </th>
+            <th>
+                Статус заявки
+            </th>
+            @if (SignInManager.IsSignedIn(User) && User.IsInRole("Employee"))
+            {
+                <th>
+                    Дата прибытия
+                </th>
+            }           
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Organization)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Employee)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VisitDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VisitPurpose)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VisitStatus)
+            </td>
+            <td>
+                    @* @if (SignInManager.IsSignedIn(User) && User.IsInRole("Employee"))
+                    {
+                        <p>
+                            @Html.DisplayFor(modelItem => item.ArrivalDateTime)
+                        </p>
+                    } *@
+            </td>
+            <td>
+                    @if (SignInManager.IsSignedIn(User) && User.IsInRole("Employee"))
+                    {
+                        <p>
+                            @Html.ActionLink("Изменить", "Edit", new { ID = item.ID } )
+                        </p>
+                    }
+                    <p>
+                        @Html.ActionLink("QR", "GenerateQR", new { ID = item.ID } )
+                    </p>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

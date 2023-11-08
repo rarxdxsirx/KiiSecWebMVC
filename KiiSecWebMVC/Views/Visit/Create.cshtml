@@ -1,0 +1,58 @@
+﻿@model KiiSec.Models.Visit
+
+@{
+    ViewData["Title"] = "View";
+}
+
+<h1>Подать заявку</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="OrganizationID" class="control-label">Организация</label>
+                <select asp-items="@ViewBag.Organizations" asp-for="OrganizationID" class="form-select" onchange="" id="organizationslist"> 
+                    <option>--Выберите организацию--</option>
+                </select>
+                <span asp-validation-for="OrganizationID" class="text-danger">Обязательное поле.</span>
+            </div>
+            <div class="form-group">    
+                <label asp-for="EmployeeID" class="control-label">Работник</label>
+                <select asp-items="@ViewBag.Employees" asp-for="EmployeeID" class="form-select">
+                    <option>--Выберите работника--</option>
+                </select>
+                <span asp-validation-for="EmployeeID" class="text-danger">Обязательное поле.</span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateStart" class="control-label">Дата начала действия заявки</label>
+                <input asp-for="DateStart" class="form-control" type="date" min="@ViewBag.MinDate" value="@ViewBag.MinDate" />
+                <span asp-validation-for="DateStart" class="text-danger">Обязательное поле.</span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateEnd" class="control-label">Дата окончания действия заявки</label>
+                <input asp-for="DateEnd" class="form-control" type="date" max="@ViewBag.MaxDate" value="@ViewBag.MinDate" />
+                <span asp-validation-for="DateEnd" class="text-danger">Обязательное поле.</span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VisitPurpose" class="control-label">Цель визита</label>
+                <input asp-for="VisitPurpose" class="form-control" />
+                <span asp-validation-for="VisitPurpose" class="text-danger">Обязательное поле.</span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Подать" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $('#organizationslist').on('change', function (event) {
+            var form = $(event.target).parents('form');
+
+            form.submit();
+        });
+    </script>
+}

@@ -46,6 +46,24 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index">Заявки</a>
                             </li>
                         }
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Visitor"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Visitor" asp-action="Details">Данные</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Visit" asp-action="List">Заявки</a>
+                            </li>
+                        }
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Employee"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Employees" asp-action="Details">Данные</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Visit" asp-action="ListForEmp">Заявки</a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

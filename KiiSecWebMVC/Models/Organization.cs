@@ -9,7 +9,6 @@
         public string PhoneNumber { get; set; }
         public string Specialization { get; set; }
         public ICollection<Employee>? Employees { get; set; }
-        public ICollection<VisitorsGroup>? VisitorsGroups{ get; set; }
         public ICollection<Visit>? Visits { get; set; }
     }
 }

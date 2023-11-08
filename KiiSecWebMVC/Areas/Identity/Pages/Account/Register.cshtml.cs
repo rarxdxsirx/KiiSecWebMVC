@@ -106,7 +106,6 @@ namespace KiiSecWebMVC.Areas.Identity.Pages.Account
             public string Role { get; set; }
         }
 
-
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;

@@ -1,0 +1,84 @@
+﻿@using KiiSec.Models;
+@using Microsoft.AspNetCore.Identity;
+@using static KiiSecWebMVC.Controllers.VisitController;
+@model IEnumerable<VisitModelForEmp>
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@{
+    ViewData["Title"] = "List";
+}
+
+<h1>Заявки</h1>
+
+@if (SignInManager.IsSignedIn(User) && User.IsInRole("Visitor"))
+                        {
+    <p>
+        <a asp-action="Create">Подать новую</a>
+    </p>
+                        }
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Работник
+            </th>
+            <th>
+                Начальная дата
+            </th>
+            <th>
+                Конечная дата
+            </th>
+            <th>
+                Назначенная дата
+            </th>
+            <th>
+                Цель визита
+            </th>
+            <th>
+                Статус заявки
+            </th>
+            <th>
+                Дата прибытия
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Employee)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateStart)
+            </td>
+             <td>
+                @Html.DisplayFor(modelItem => item.DateEnd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VisitDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VisitPurpose)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VisitStatus)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.ArrivalDateTime)                     
+            </td>
+            <td>
+                        @Html.ActionLink("Изменить", "Edit", new { ID = item.ID } ) |
+                        @Html.ActionLink("QR", "GenerateQR", new { ID = item.ID } )
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

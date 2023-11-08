@@ -1,24 +1,18 @@
-﻿@model KiiSec.Models.Employee
+﻿@model KiiSec.Models.Visitor
 
 @{
-    ViewData["Title"] = "Изменить";
+    ViewData["Title"] = "Create";
 }
 
-<h4>Редактирование данных работника</h4>
+<h1>Создание учётной записи посетителя</h1>
 <hr />
 <div class="row">
-    
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="OrganizationId" class="control-label">ID Организации</label>
-                <input asp-for="OrganizationId" class="form-control" readonly="readonly"/>
-            </div>
-            <div class="form-group">
-                <label asp-for="Department" class="control-label">Отделение</label>
-                <input asp-for="Department" class="form-control" />
-                <span asp-validation-for="Department" class="text-danger">Обязательное поле.</span>
+                <label asp-for="VisitorOrganization" class="control-label">Организация</label>
+                <input asp-for="VisitorOrganization" class="form-control" />
             </div>
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label">Имя</label>
@@ -33,11 +27,6 @@
             <div class="form-group">
                 <label asp-for="MiddleName" class="control-label">Отчество</label>
                 <input asp-for="MiddleName" class="form-control" />
-                <span asp-validation-for="MiddleName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label">Email</label>
-                <input asp-for="Email" class="form-control" readonly="readonly" />
             </div>
             <div class="form-group">
                 <label asp-for="PhoneNumber" class="control-label">Номер телефона</label>
@@ -46,21 +35,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="Login" class="control-label">Логин</label>
-                <input asp-for="Login" class="form-control"  />
+                <input asp-for="Login" class="form-control" />
                 <span asp-validation-for="Login" class="text-danger">Обязательное поле.</span>
             </div>
             <div class="form-group">
-                <label asp-for="BirthDate" class="control-label">День рождения</label>
-                <input type="date" class="form-contol" asp-for="BirthDate" />
+                <label asp-for="BirthDate" class="control-label">Дата рождения</label>
+                <input asp-for="BirthDate" type="date" class="form-control" />
                 <span asp-validation-for="BirthDate" class="text-danger">Обязательное поле.</span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Сохранить" class="btn btn-primary" />
+                <input type="submit" value="Создать" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
-<div>
-    @Html.ActionLink("Вернуться к списку", "List", new {organizationId = Model.OrganizationId})
-</div>
-

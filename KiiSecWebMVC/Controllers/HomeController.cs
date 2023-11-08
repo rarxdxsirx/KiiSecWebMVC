@@ -49,10 +49,12 @@ namespace KiiSecWebMVC.Controllers
             }
             if (_userManager.GetRolesAsync(user).Result.Contains("Visitor"))
             {
-                //TODO CHECK IF VISITOR IS CREATED
-                return Redirect("/Organization/List");
+                if (KiiSecAPI.GetVisitors().Result.FirstOrDefault(o => o.Email == user.Email) != null)
+                {
+                    return Redirect("/Visitor/Details");
+                }
+                return Redirect("/Visitor/Create");
             }
-            //TODO EMPLOYEE 
             return View();
         }
 

@@ -31,6 +31,7 @@ namespace KiiSecWebMVC.Controllers
 
         public IActionResult Index()
         {
+            //TODO: Redirection deffs on employee/organization roles
             return View();
         }
         public IActionResult Success()
@@ -55,7 +56,7 @@ namespace KiiSecWebMVC.Controllers
             // TODO Organization exists in API mb?
             if (KiiSecAPI.GetOrganizations().Result.FirstOrDefault(o => o.Email == user.Email) != null)
             {
-                return Redirect("/Fail/"); // same change
+                return Redirect("~/Home/Fail"); // same change
             }
             organization.Email = user.Email;
             ModelState.Remove("Email");
@@ -68,9 +69,9 @@ namespace KiiSecWebMVC.Controllers
                 if (response.IsSuccessStatusCode)
                 {
 
-                    return Redirect("/Success/"); // TODO Change to RedirectToACtion
+                    return Redirect("~/Home/Success"); // TODO Change to RedirectToACtion
                 }
-                return Redirect("/Fail/");
+                return Redirect("~/Home/Fail");
             }   
             return View();
             // same change
